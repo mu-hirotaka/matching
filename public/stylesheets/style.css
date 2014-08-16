@@ -1,0 +1,70 @@
+body {
+  padding: 30px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-color: #eee;
+}
+
+a {
+  color: #00B7FF;
+}
+
+#battle {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  background-color: #eee;
+  overflow: hidden;
+}
+.left-battle-area {
+  position: absolute;
+  float: left;
+  width: 50%;
+  height: 200px;
+  background-color: #d2b48c;
+}
+.right-battle-area {
+  position: absolute;
+  top: 0px;
+  left: 122px;
+  float: left;
+  width: 50%;
+  height: 200px;
+  background-color: #f0e68c;
+}
+.center-battle-area {
+  position: absolute;
+  z-index: 1;
+  top: 100px;
+  left: 109px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.player-image {
+  width: 50%;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.matching-animation {
+  animation: matching 0.5s;
+  animation-iteration-count: finite;
+  -webkit-animation: matching 0.5s;
+  -webkit-animation-iteration-count: finite;
+}
+
+@keyframes matching {
+    0% { left: 500px; }
+   85% { left: 110px; }
+   90% { left: 122px; }
+   95% { left: 110px; }
+  100% { left: 122px; }
+}
+@-webkit-keyframes matching {
+    0% { left: 500px; }
+   85% { left: 110px; }
+   90% { left: 122px; }
+   95% { left: 110px; }
+  100% { left: 122px; }
+}
