@@ -14,11 +14,31 @@ var server = app.listen(app.get('port'), app.get('host'), function() {
   debug('Express server listening on port ' + server.address().port);
 });
 
+var playersQueue = [];
+
 var io = require('socket.io')(server);
 io.on('connection', function(socket) {
 
   socket.on('login', function(data) {
-
+    var target;
+    if (playersQueue.length > 0) {
+      target = playersQueue.pop();
+      if (socket.id == target.id) { 
+        playersQueue.push({ id: socket.id, playerImagePath: data.playerImagePath });
+      } else {
+        socket.emit('target player', {
+          id: target.id,
+          playerImagePath: target.playerImagePath
+        });
+        socket.to(target.id).emit('target player', {
+          id: socket.id,
+          playerImagePath: data.playerImagePath
+        });
+      }
+    } else {
+      playersQueue.push({ id: socket.id, playerImagePath: data.playerImagePath });
+    }
+    console.log(playersQueue);
   });
 });
 
