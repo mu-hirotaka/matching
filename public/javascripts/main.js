@@ -8,7 +8,7 @@ $(function() {
   initView();
 
   function getPlayerImagePath() {
-    var image = ['1.gif', '2.gif', '3.jpg', '4.jpg', '5.gif'];
+    var image = ['1.gif', '2.gif', '3.jpg', '4.jpg', '5.gif', '6.gif'];
     return '/images/' + image[Math.floor(Math.random() * image.length)];
   }
   function initView() {
