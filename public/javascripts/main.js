@@ -1,4 +1,5 @@
 $(function() {
+  var socket = io.connect($('#uri').data('uri'));
   var $leftPlayer = $('.left-battle-area');
   var $rightPlayer = $('.right-battle-area');
   var $spinner = $('#spinner');
@@ -22,4 +23,7 @@ $(function() {
     $rightPlayer.addClass('matching-animation');
   }
 
+  function login() {
+    
+  }
 });
