@@ -70,7 +70,10 @@ a {
 }
 
 #spinner {
-  position: relative;
+  position: absolute;
+  z-index: 2;
+  top: 63px;
+  left: 72px;
   float: left;
   width:100px;
   height:100px;
