@@ -4,6 +4,7 @@ $(function() {
   var $rightPlayer = $('.right-battle-area');
   var $searchBtn = $('.search-target');
   var $spinner = $('#spinner');
+  var $heart = $('#heart');
 
   initView();
 
@@ -35,13 +36,20 @@ $(function() {
     var myPlayerImagePath = localStorage.getItem('myPlayerImagePath');
     socket.emit('login', { playerImagePath: myPlayerImagePath });
   }
+
+  function showHeart() {
+    $heart.fadeIn(2000);
+  }
+
   $searchBtn.on('click', function() {
     $rightPlayer.hide();
+    $heart.fadeOut('normal');
     $spinner.fadeIn('normal');
     emitLogin();
     $(this).fadeTo('normal', 0.33);
   });
   socket.on('target player', function(data) {
     createTargetView(data);
+    setTimeout(showHeart, 1000);
   });
 });
