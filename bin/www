@@ -2,6 +2,7 @@
 var debug = require('debug')('matching');
 var app = require('../app');
 var config = require('../config.js');
+var us = require('underscore')._;
 
 if (app.get('env') === 'production') {
   app.set('port', config.production.port);
@@ -15,6 +16,7 @@ var server = app.listen(app.get('port'), app.get('host'), function() {
 });
 
 var playersQueue = [];
+var sessions = {};
 
 var io = require('socket.io')(server);
 io.on('connection', function(socket) {
@@ -26,19 +28,60 @@ io.on('connection', function(socket) {
       if (socket.id == target.id) { 
         playersQueue.push({ id: socket.id, playerImagePath: data.playerImagePath });
       } else {
+        var secretKey = target.id + socket.id;
         socket.emit('target player', {
           id: target.id,
+          sKey: secretKey,
           playerImagePath: target.playerImagePath
         });
         socket.to(target.id).emit('target player', {
           id: socket.id,
+          sKey: secretKey,
           playerImagePath: data.playerImagePath
         });
+        sessions[secretKey] = { users:[socket.id, target.id], ok:0, ng: 0 };
       }
     } else {
       playersQueue.push({ id: socket.id, playerImagePath: data.playerImagePath });
     }
     console.log(playersQueue);
+  });
+
+  socket.on('answer', function(data) {
+    var secretKey = data.sKey;
+    var session = sessions[secretKey];
+    if (data.answer == 'ok') {
+      session.ok++;
+    } else {
+      session.ng++;
+    }
+    if ((session.ok + session.ng) >= 2) {
+      if (session.ok >= 2) {
+        us.each(session.users, function(item) {
+          if (socket.id != item) {
+            socket.to(item).emit('result', {
+              res: 'heart'
+            });
+          } else {
+            socket.emit('result', {
+              res: 'heart'
+            });
+          }
+        });
+      } else {
+        us.each(session.users, function(item) {
+          if (socket.id != item) {
+            socket.to(item).emit('result', {
+              res: 'batsu'
+            });
+          } else {
+            socket.emit('result', {
+              res: 'batsu'
+            });
+          }
+        });
+      }
+    }
   });
 });
 

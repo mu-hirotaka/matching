@@ -5,7 +5,11 @@ $(function() {
   var $searchBtn = $('.search-target');
   var $spinner = $('#spinner');
   var $heart = $('#heart');
+  var $batsu = $('#batsu');
+  var $okBtn = $('.ok-btn');
+  var $ngBtn = $('.ng-btn');
 
+  var sKey;
   initView();
 
   function getPlayerImagePath() {
@@ -29,27 +33,59 @@ $(function() {
     $rightPlayer.addClass('player-image');
     $rightPlayer.fadeIn('slow');
     $rightPlayer.addClass('matching-animation');
-    $searchBtn.fadeTo('normal', 1.0);
+    $okBtn.fadeTo('normal', 1.0);
+    $ngBtn.fadeTo('normal', 1.0);
   }
 
   function emitLogin() {
     var myPlayerImagePath = localStorage.getItem('myPlayerImagePath');
     socket.emit('login', { playerImagePath: myPlayerImagePath });
   }
+  function emitAnswer(answer) {
+    console.log(sKey);
+    socket.emit('answer', { sKey: sKey, answer: answer });
+  }
 
   function showHeart() {
     $heart.fadeIn(2000);
   }
 
+  function showBatsu() {
+    $batsu.fadeIn(2000);
+  }
+
   $searchBtn.on('click', function() {
     $rightPlayer.hide();
     $heart.fadeOut('normal');
+    $batsu.fadeOut('normal');
     $spinner.fadeIn('normal');
     emitLogin();
     $(this).fadeTo('normal', 0.33);
   });
+
+  $okBtn.on('click', function() {
+    emitAnswer('ok');
+    $okBtn.fadeTo('normal', 0.33);
+    $ngBtn.fadeTo('normal', 0.33);
+  });
+
+  $ngBtn.on('click', function() {
+    emitAnswer('ng');
+    $okBtn.fadeTo('normal', 0.33);
+    $ngBtn.fadeTo('normal', 0.33);
+  });
+
   socket.on('target player', function(data) {
+    sKey = data.sKey;
     createTargetView(data);
-    setTimeout(showHeart, 1000);
+  });
+
+  socket.on('result', function(data) {
+    if (data.res == 'heart') {
+      showHeart();
+    } else {
+      showBatsu();
+    }
+    $searchBtn.fadeTo('normal', 1.0);
   });
 });
