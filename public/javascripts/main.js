@@ -42,7 +42,6 @@ $(function() {
     socket.emit('login', { playerImagePath: myPlayerImagePath });
   }
   function emitAnswer(answer) {
-    console.log(sKey);
     socket.emit('answer', { sKey: sKey, answer: answer });
   }
 
