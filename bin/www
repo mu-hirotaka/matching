@@ -83,5 +83,10 @@ io.on('connection', function(socket) {
       }
     }
   });
+
+
+  socket.on('send player', function(data) {
+    socket.broadcast.emit('change player', data);
+  });
 });
 

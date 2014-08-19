@@ -52,9 +52,16 @@ $(function() {
     });
 
     $('.select-player').on('click', function() {
-      var id = localStorage.getItem('formation-player-id');
-      var $position = $('#' + id);
-      $position.css("background-image", $(this).css("background-image"));
+      var id = '#' + localStorage.getItem('formation-player-id');
+      var uri = $(this).css("background-image");
+      var $position = $(id);
+      $position.css("background-image", uri);
+      socket.emit('send player', { id: id, uri: uri });
     });
   }
+
+
+  socket.on('change player', function(data) {
+    $(data.id).css("background-image", data.uri);
+  });
 });
