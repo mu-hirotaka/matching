@@ -17,6 +17,7 @@ var server = app.listen(app.get('port'), app.get('host'), function() {
 
 var playersQueue = [];
 var sessions = {};
+var playersPosition = {};
 
 var io = require('socket.io')(server);
 io.on('connection', function(socket) {
@@ -84,8 +85,11 @@ io.on('connection', function(socket) {
     }
   });
 
-
+  socket.on('login formation', function() {
+    socket.emit('init formation', { formation: 1, position: playersPosition } );
+  });
   socket.on('send player', function(data) {
+    playersPosition[data.id] = data.uri;
     socket.broadcast.emit('change player', data);
   });
 });

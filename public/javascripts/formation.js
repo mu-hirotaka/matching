@@ -5,6 +5,7 @@ $(function() {
 
   initView();
   initEvent();
+  login();
 
   function initView() {
     var positions = [
@@ -60,6 +61,15 @@ $(function() {
     });
   }
 
+  function login() {
+    socket.emit('login formation', {});
+  }
+  socket.on('init formation', function(data) {
+    var playerPosition = data.position;
+    _.each(playerPosition, function(value, key, list) {
+      $(key).css("background-image", value);
+    });
+  });
 
   socket.on('change player', function(data) {
     $(data.id).css("background-image", data.uri);
